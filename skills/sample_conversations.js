@@ -11,13 +11,13 @@ through the conversation are chosen based on the user's response.
 
 module.exports = function(controller) {
 
-    controller.hears(['(.*)'], 'message_received', function(bot, message) {
+    // controller.hears(['(.*)'], 'message_received', function(bot, message) {
 
-        bot.startConversation(message, function(err, convo) {
-            convo.say('In order to start BrandChat.me, please type your KEYWORD or CODE from the promo card or coupon.');           
-        });
+    //     bot.startConversation(message, function(err, convo) {
+    //         convo.say('In order to start BrandChat.me, please type your KEYWORD or CODE from the promo card or coupon.');           
+    //     });
 
-    });
+    // });
 
     controller.hears(['Chewy Caramel'], 'message_received', function(bot, message) {
 
