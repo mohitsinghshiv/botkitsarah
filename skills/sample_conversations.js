@@ -11,6 +11,22 @@ through the conversation are chosen based on the user's response.
 
 module.exports = function(controller) {
 
+    controller.hears(['(.*)'], 'message_received', function(bot, message) {
+
+        bot.startConversation(message, function(err, convo) {
+            convo.say('In order to start BrandChat.me, please type your KEYWORD or CODE from the promo card or coupon.');           
+        });
+
+    });
+
+    controller.hears(['Chewy Caramel'], 'message_received', function(bot, message) {
+
+        bot.startConversation(message, function(err, convo) {
+            convo.say('Hi \n M&Ms Caramel here! \n Nice to meet you! \n :wave: \n You’re entered for a chance to win!\n https://s3.us-east-2.amazonaws.com/brandchat.ai/MMsFiles/Employee_IG_subt_MZPP0626000H.mp4 \n Follow Us on \n Facebook: https://www.facebook.com/mms/ \n Instagram: @mmschocolate \n Twitter: @mmschocolate \n We’ll let you know if you’ve won soon! \n');           
+        });
+
+    });
+
     controller.hears(['color'], 'message_received', function(bot, message) {
 
         bot.startConversation(message, function(err, convo) {
