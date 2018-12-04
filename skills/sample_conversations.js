@@ -1,3 +1,4 @@
+var request = require('request');
 /*
 
 WHAT IS THIS?
@@ -16,58 +17,86 @@ module.exports = function (controller) {
         bot.startConversation(message, function (err, convo) {
 
             convo.ask('In order to start BrandChat.me, please type your KEYWORD or CODE from the promo card or coupon.', function (response, convo) {
-
+               
                 if (response.text === 'Chewy Caramel') {
-                    convo.say('Hi');
-                    convo.say('👋');
-                    convo.say('Nice to meet you!');
-                    convo.say("I'm Caramel, your new love!");
-                    convo.say('💖');
-                    convo.say("I'm a Spokescandy at M&M'S Candies.");
-                    convo.say("You're entered for a chance to win 1 of 5 $100 Prizes💵");
-                    convo.say({
-                        attachment: {
-                            'type': 'video',
-                            'payload': {
-                                'url': 'https://s3.us-east-2.amazonaws.com/brandchat.ai/MMsFiles/Employee_IG_subt_MZPP0626000H.mp4'
+                var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=' + process.env.page_token;
+                request({
+                    url: usersPublicProfile,
+                    json: true // parse
+                }, function (error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                        convo.say('Hi ' + body.first_name);
+                   
+                        convo.say('👋');
+                        convo.say('Nice to meet you!');
+                        convo.say("I'm Caramel, your new love!");
+                        convo.say('💖');
+                        convo.say("I'm a Spokescandy at M&M'S Candies.");
+                        convo.say("You're entered for a chance to win 1 of 5 $100 Prizes💵");
+                        convo.say({
+                            attachment: {
+                                'type': 'video',
+                                'payload': {
+                                    'url': 'https://s3.us-east-2.amazonaws.com/brandchat.ai/MMsFiles/Employee_IG_subt_MZPP0626000H.mp4'
+                                }
                             }
-                        }
-                    });
-                    convo.say({
-                        attachment: {
-                            type: 'template',
-                            payload: {
-                                template_type: 'button',
-                                text: "Like & Follow M&M'S for news & updates:",
-                                buttons: [
-                                    {
-                                        type: 'web_url',
-                                        title: "Like & Follow M&M'S for news & updates:",
-                                        url: "https://www.facebook.com/mms",
-                                    }
-                                ]
+                        });
+                        convo.ask({
+                            text: '.',
+                            quick_replies: [{
+                                content_type: 'text',
+                                title: 'next',
+                                payload: 'next',
+                            }],
+                        }, function (response, convo) {
+                            convo.next();
+                        });
+                        convo.say("Like & Follow M&M'S for news & updates:");
+                        convo.say({
+                            attachment: {
+                                'type': 'template',
+                                'payload': {
+                                    'template_type': 'generic',
+                                    'elements': [
+                                        {
+                                            "title": "Follow M&M on Facebook",
+                                            "image_url": "https://s3.us-east-2.amazonaws.com/brandchat.ai/fb_logo.png",
+                                            "subtitle": "Like & Follow M&M'S for news & updates",
+                                            "default_action": {
+                                                "type": "web_url",
+                                                "url": "https://www.facebook.com/mms"
+                                            }
+                                        },
+                                        {
+                                            "title": "Follow M&M on Instagram",
+                                            "image_url": "https://s3.us-east-2.amazonaws.com/brandchat.ai/instalogo.png",
+                                            "subtitle": "Like & Follow M&M'S for news & updates",
+                                            "default_action": {
+                                                "type": "web_url",
+                                                "url": "https://www.instagram.com/mmschocolate"
+                                            }
+                                        },
+                                        {
+                                            "title": "Follow M&M on Twitter",
+                                            "image_url": "https://a.slack-edge.com/ae7f/img/services/twitter_512.png",
+                                            "subtitle": "Like & Follow M&M'S for news & updates",
+                                            "default_action": {
+                                                "type": "web_url",
+                                                "url": "https://twitter.com/mmschocolate"
+                                            }
+                                        }
+                                    ]
+                                }
                             }
-                        }
-                    });
-                    convo.say("We'll announce our winner soon!");
-                    convo.say('👋');
-                }
-                convo.next();
-            });
-        });
+                        });
 
-    });
-
-    controller.hears(['color'], 'message_received', function (bot, message) {
-
-        bot.startConversation(message, function (err, convo) {
-            convo.say('This is an example of using convo.ask with a single callback.');
-
-            convo.ask('What is your favorite color Mohit From Local?', function (response, convo) {
-
-                convo.say('Cool, I like ' + response.text + ' too!');
-                convo.next();
-
+                        convo.say("We'll announce our winner soon!");
+                        convo.say('👋');                       
+                        
+                    }
+                });
+            }
+            convo.next();
             });
         });
 
